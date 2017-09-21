@@ -43,17 +43,15 @@ RUN cd ~/temp && wget https://cmake.org/files/v3.9/cmake-3.9.1.tar.gz && tar -xv
 RUN apt-get install zlib1g-dev --yes
 RUN apt-get upgrade make --yes
 
-
-
 ###INSTALL THE PROGRAMS
-RUN git clone https://github.com/latours/Docker_Pizzly.git /data/script_pizzly_fasta
+RUN git clone https://github.com/latours/Docker_Pizzly.git ~/temp
 RUN git clone https://github.com/pachterlab/kallisto.git /data/kallisto
 RUN git clone https://github.com/pmelsted/pizzly.git /data/pizzly
-RUN ls /data/pizzly/
+#RUN ls /data/pizzly/
 RUN mkdir /data/pizzly/build/ && cd /data/pizzly/build && cmake .. 
 RUN cd /data/pizzly/build/ && make
 RUN cd /data/pizzly/build/ && ls
-RUN ls /data/script_pizzly_fasta
+#RUN ls /data/script_pizzly_fasta
 
 ###Download The GTF and FASTA Files (Reference Files)
 RUN mkdir /data/reference_genome/
@@ -61,6 +59,10 @@ RUN wget http://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapi
 RUN wget http://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz > /data/reference_genome/Homo_sapiens.GRCh38.90.gtf.gz
 RUN ls /data/reference_genome/
 
+#COPY . /data/pizzly/build/
 
+#RUN cp /data/pizzly/build/batch_pizzly.sh /data/pizzly/batch_pizzly.sh && chmod a+x /data/pizzly/batch_pizzly.sh
 
+RUN cp ~temp/batch_pizzly.sh /data/pizzly/batch_pizzly.sh && chmod a+x /data/pizzly/batch_pizzly.sh
 
+ENTRYPOINT ["/data/pizzly/batch_pizzly.sh"]
